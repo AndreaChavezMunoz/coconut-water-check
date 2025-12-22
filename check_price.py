@@ -29,13 +29,12 @@ def send_push_notification(price: float) -> None:
     requests.post(
         "https://api.pushover.net/1/messages.json",
         data={
-            "token": os.environ["PUSHOVER_APP_TOKEN"],
-            "user": os.environ["PUSHOVER_USER_KEY"],
-            "title": "🥥 Precio detectado",
-            "message": f"Nuevo precio: S/ {price:.2f}",
-            "url": PRODUCT_URL,
+            "token": PUSHOVER_APP_TOKEN,
+            "user": PUSHOVER_USER_KEY,
+            "title": "🥥 Precio cambió",
+            "message": f"Nuevo precio: S/ {price}",
+            "url": "https://www.wong.pe/coconut-water",
             "url_title": "Ver producto en Wong",
-            "priority": 0,
         },
         timeout=10
     )
