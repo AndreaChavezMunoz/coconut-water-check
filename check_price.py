@@ -29,7 +29,7 @@ def fetch_price_from_vtex_api(product_id: str, sales_channel: int) -> float:
 
 # ---------- PUSH NOTIFICATION ----------
 def send_push_notification(price: float) -> None:
-    requests.post(
+    response = requests.post(
         "https://api.pushover.net/1/messages.json",
         data={
             "token": PUSHOVER_APP_TOKEN,
@@ -41,6 +41,9 @@ def send_push_notification(price: float) -> None:
         },
         timeout=10
     )
+
+    print("Pushover status:", response.status_code)
+    print("Pushover response:", response.text)
 
 
 # ---------- MAIN ----------
