@@ -6,6 +6,9 @@ import requests
 PRODUCT_ID = "573570"
 SALES_CHANNEL = 70
 PRODUCT_URL = "https://www.wong.pe/agua-de-coco-natifrut-300ml-701143-2/p?srsltid=AfmBOopHG5FLpp9qAWhE-CVbkNimhrIlwSc_Ymqiz0QwMBOu41vDnPMW"
+PUSHOVER_USER_KEY = os.environ.get("PUSHOVER_USER_KEY")
+PUSHOVER_APP_TOKEN = os.environ.get("PUSHOVER_APP_TOKEN")
+
 
 
 # ---------- PRICE FETCH ----------
