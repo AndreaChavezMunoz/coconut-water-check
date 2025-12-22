@@ -28,7 +28,10 @@ def fetch_price_from_vtex_api(product_id: str, sales_channel: int) -> float:
 
 
 # ---------- PUSH NOTIFICATION ----------
-def send_push_notification(price: float) -> None:
+def send_push_notification(price):
+    if not PUSHOVER_APP_TOKEN or not PUSHOVER_USER_KEY:
+        raise RuntimeError("Missing Pushover credentials")
+
     response = requests.post(
         "https://api.pushover.net/1/messages.json",
         data={
@@ -42,6 +45,8 @@ def send_push_notification(price: float) -> None:
         timeout=10
     )
 
+    print("Token exists:", bool(PUSHOVER_APP_TOKEN))
+    print("User key exists:", bool(PUSHOVER_USER_KEY))
     print("Pushover status:", response.status_code)
     print("Pushover response:", response.text)
 
