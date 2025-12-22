@@ -13,8 +13,11 @@ def fetch_price_from_vtex_api(product_id: str, sales_channel: int = 70) -> float
 
     data = response.json()
 
-    return data[0]["items"][0]["sellers"][0]["commertialOffer"]["Price"]
+    offer = data[0]["items"][0]["sellers"][0]["commertialOffer"]
 
+    print("DEBUG – commercial offer:", offer)
+
+    return offer["Price"]
 
 def main():
     product_id = "573570"  # Coconut water product ID
