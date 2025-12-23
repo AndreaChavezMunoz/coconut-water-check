@@ -29,7 +29,10 @@ def fetch_price_from_vtex_api(product_id: str, sales_channel: int) -> float:
 
 # ---------- PUSH NOTIFICATION ----------
 def send_push_notification(price):
-    if not PUSHOVER_APP_TOKEN or not PUSHOVER_USER_KEY:
+    token = os.environ.get("PUSHOVER_APP_TOKEN")
+    user = os.environ.get("PUSHOVER_USER_KEY")
+
+    if not token or not user:
         raise RuntimeError("Missing Pushover credentials")
 
     response = requests.post(
