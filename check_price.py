@@ -38,18 +38,16 @@ def send_push_notification(price):
     response = requests.post(
         "https://api.pushover.net/1/messages.json",
         data={
-            "token": PUSHOVER_APP_TOKEN,
-            "user": PUSHOVER_USER_KEY,
+            "token": token,   # 👈 USAR ESTO
+            "user": user,     # 👈 Y ESTO
             "title": "🥥 Precio cambió",
             "message": f"Nuevo precio: S/ {price}",
-            "url": "https://www.wong.pe/coconut-water",
+            "url": PRODUCT_URL,
             "url_title": "Ver producto en Wong",
         },
         timeout=10
     )
 
-    print("Token exists:", bool(PUSHOVER_APP_TOKEN))
-    print("User key exists:", bool(PUSHOVER_USER_KEY))
     print("Pushover status:", response.status_code)
     print("Pushover response:", response.text)
 
