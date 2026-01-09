@@ -10,7 +10,6 @@ PUSHOVER_USER_KEY = os.environ.get("PUSHOVER_USER_KEY")
 PUSHOVER_APP_TOKEN = os.environ.get("PUSHOVER_APP_TOKEN")
 
 
-
 # ---------- PRICE FETCH ----------
 def fetch_price_from_vtex_api(product_id: str, sales_channel: int) -> float:
     url = (
@@ -29,8 +28,9 @@ def fetch_price_from_vtex_api(product_id: str, sales_channel: int) -> float:
 
 # ---------- PUSH NOTIFICATION ----------
 def send_push_notification(price):
-    token = os.environ.get("PUSHOVER_APP_TOKEN")
-    user = os.environ.get("PUSHOVER_USER_KEY")
+    # Use the global variables instead of getting from os.environ again
+    token = PUSHOVER_APP_TOKEN
+    user = PUSHOVER_USER_KEY
 
     if not token or not user:
         raise RuntimeError("Missing Pushover credentials")
@@ -38,10 +38,10 @@ def send_push_notification(price):
     response = requests.post(
         "https://api.pushover.net/1/messages.json",
         data={
-            "token": token,   # 👈 USAR ESTO
-            "user": user,     # 👈 Y ESTO
+            "token": token,
+            "user": user,
             "title": "🥥 Precio cambió",
-            "message": f"Nuevo precio: S/ {price}",
+            "message": f"Nuevo precio: S/ {price:.2f}",  # Added :.2f for formatting
             "url": PRODUCT_URL,
             "url_title": "Ver producto en Wong",
         },
@@ -61,4 +61,9 @@ def main():
 
 
 if __name__ == "__main__":
+    # Quick check
+    if not PUSHOVER_USER_KEY or not PUSHOVER_APP_TOKEN:
+        print("Warning: Pushover credentials not set")
+        print(f"PUSHOVER_USER_KEY: {'Set' if PUSHOVER_USER_KEY else 'Not set'}")
+        print(f"PUSHOVER_APP_TOKEN: {'Set' if PUSHOVER_APP_TOKEN else 'Not set'}")
     main()
