@@ -8,6 +8,7 @@ SALES_CHANNEL = 70
 PRODUCT_URL = "https://www.wong.pe/agua-de-coco-natifrut-300ml-701143-2/p?srsltid=AfmBOopHG5FLpp9qAWhE-CVbkNimhrIlwSc_Ymqiz0QwMBOu41vDnPMW"
 PUSHOVER_USER_KEY = os.environ.get("PUSHOVER_USER_KEY")
 PUSHOVER_APP_TOKEN = os.environ.get("PUSHOVER_APP_TOKEN")
+PRICE_THRESHOLD = 7.00  # Only send notification if price < S/ 7
 
 
 # ---------- PRICE FETCH ----------
@@ -28,7 +29,6 @@ def fetch_price_from_vtex_api(product_id: str, sales_channel: int) -> float:
 
 # ---------- PUSH NOTIFICATION ----------
 def send_push_notification(price):
-    # Use the global variables instead of getting from os.environ again
     token = PUSHOVER_APP_TOKEN
     user = PUSHOVER_USER_KEY
 
@@ -40,10 +40,11 @@ def send_push_notification(price):
         data={
             "token": token,
             "user": user,
-            "title": "🥥 Precio cambió",
-            "message": f"Nuevo precio: S/ {price:.2f}",  # Added :.2f for formatting
+            "title": "🥥 PRECIO BAJO!",
+            "message": f"¡Oferta! Agua de coco a S/ {price:.2f}",
             "url": PRODUCT_URL,
             "url_title": "Ver producto en Wong",
+            "priority": 1,  # Optional: makes the notification stand out more
         },
         timeout=10
     )
@@ -56,14 +57,22 @@ def send_push_notification(price):
 def main():
     price = fetch_price_from_vtex_api(PRODUCT_ID, SALES_CHANNEL)
     print(f"Current price: S/ {price:.2f}")
-
-    send_push_notification(price)
+    
+    # Check if price is below threshold
+    if price < PRICE_THRESHOLD:
+        print(f"✅ Price is below S/ {PRICE_THRESHOLD:.2f}! Sending notification...")
+        send_push_notification(price)
+    else:
+        print(f"❌ Price is S/ {price:.2f} (not below S/ {PRICE_THRESHOLD:.2f}). No notification sent.")
 
 
 if __name__ == "__main__":
-    # Quick check
+    # Quick check for debugging
     if not PUSHOVER_USER_KEY or not PUSHOVER_APP_TOKEN:
-        print("Warning: Pushover credentials not set")
-        print(f"PUSHOVER_USER_KEY: {'Set' if PUSHOVER_USER_KEY else 'Not set'}")
-        print(f"PUSHOVER_APP_TOKEN: {'Set' if PUSHOVER_APP_TOKEN else 'Not set'}")
+        print("⚠️  Warning: Pushover credentials not set")
+        print(f"   PUSHOVER_USER_KEY: {'Set' if PUSHOVER_USER_KEY else 'Not set'}")
+        print(f"   PUSHOVER_APP_TOKEN: {'Set' if PUSHOVER_APP_TOKEN else 'Not set'}")
+    else:
+        print("✅ Pushover credentials are set")
+    
     main()
